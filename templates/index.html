@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    <title>Number Game</title>
+</head>
+<body>
+    <h1 class="mx-auto" style="width: 50%;text-align:center;">Welcome to the Great Number Game!</h1>
+    <p class="mx-auto" style="width: 50%;text-align:center;">I'm thinking of a number between 1 and 100...</p>
+    <div class="container d-flex justify-content-center mt-5" style="width:50%;height:220px">
+        <div class="container w-50 p-3 bg-secondary text-light">
+            <p class="text-center">Take a guess!</p>
+            <form action="/guess" method="post" class="container row">
+                <input type="number" name="guessed_number" class="form-control mb-3">
+                <input type="submit" class="btn btn-info col-4 mx-auto">
+            </form>
+            <p class="text-center fw-lighter fst-italic mt-3">You have 5 attempts to guess the number</p>
+        </div>
+        <div class="container bg-light rounded w-50 p-3">
+            
+            {% if session["guess"] %}
+                {% if session["status"] == "game_over" %}
+                    <h3 class="text-dark text-center">Oh no!</h3>
+                    <p class="text-center mb-4">You did not guess the number in time. Game over.</p> 
+                    <form action="/clear_session" method="post" class="row">
+                        <input type="submit" value="Play again" class="btn btn-success col-4 mx-auto">
+                    </form>
+                    <p class="text-center fw-lighter fst-italic mt-2">Number of guesses: {{ session["count_guesses"] }}</p>
+                {% else %}
+                    <p class="text-center text-info">You guessed {{ session["guess"] }}</p>
+                    {% if session["guess"]|int > session["random_num"]|int %}
+                        <h3 class="text-danger text-center">Too high!</h3>
+                        <p class="text-center mb-5">Guess again</p> 
+                        <p class="text-center fw-lighter fst-italic">Number of guesses: {{ session["count_guesses"] }}</p>
+                    {% elif session["guess"]|int < session["random_num"]|int %}
+                        <h3 class="text-center text-warning">Too low!</h3>
+                        <p class="text-center mb-5">Guess again</p> 
+                        <p class="text-center fw-lighter fst-italic">Number of guesses: {{ session["count_guesses"] }}</p>
+                    {% else %}
+                        <h3 class="text-success text-center mb-4">You guessed it!!</h3>
+                        <form action="/clear_session" method="post" class="row">
+                            <input type="submit" value="Play again" class="btn btn-success col-4 mx-auto">
+                        </form>
+                        <p class="text-center fw-lighter fst-italic">Number of guesses: {{ session["count_guesses"] }}</p>
+                    {% endif %}
+                {% endif %}
+            {% endif %}
+
+        </div>
+    </div>
+</body>
+</html>
